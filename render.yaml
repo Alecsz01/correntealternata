@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: ac-power-analyzer
+    env: static
+    buildCommand: npm install
+    startCommand: npm start
+    staticPublishPath: .

@@ -1,0 +1,16 @@
+{
+    "name": "ac-power-analyzer",
+    "version": "1.0.0",
+    "description": "AC Power & Circuit Analyzer",
+    "main": "index.html",
+    "scripts": {
+      "start": "serve -s .",
+      "build": "echo 'No build step required'"
+    },
+    "dependencies": {
+      "serve": "^14.2.1"
+    },
+    "engines": {
+      "node": ">=14.0.0"
+    }
+  }
