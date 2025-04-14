@@ -1,0 +1,175 @@
+/* Tema scuro generale */
+body {
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+}
+
+.card {
+    background-color: #2d2d2d;
+    border: 1px solid #404040;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    margin-bottom: 20px;
+}
+
+.card-header {
+    background-color: #363636;
+    border-bottom: 1px solid #404040;
+    color: #ffffff;
+}
+
+canvas {
+    max-width: 100%;
+    margin-top: 20px;
+    min-height: 300px;
+}
+
+input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+}
+
+#powerResults p {
+    font-size: 1.1em;
+    margin-bottom: 0.5rem;
+}
+
+#powerResults span {
+    color: #00ff95;
+}
+
+.formula-box {
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    font-family: "Courier New", monospace;
+}
+
+.formula-box p {
+    margin-bottom: 0.5rem;
+}
+
+.input-group {
+    margin-bottom: 1rem;
+}
+
+.form-control, .form-select {
+    background-color: #363636;
+    border: 1px solid #404040;
+    color: #e0e0e0;
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: #404040;
+    border-color: #00ff95;
+    color: #ffffff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 255, 149, 0.25);
+}
+
+h6 {
+    color: #495057;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.power-chart-container {
+    height: 200px;
+    width: 100%;
+    max-width: 600px;
+    margin: 15px auto;
+    padding: 10px;
+    background-color: #2d2d2d;
+    border-radius: 8px;
+}
+
+.nav-tabs .nav-link {
+    color: #e0e0e0;
+}
+
+.nav-tabs .nav-link.active {
+    background-color: #2d2d2d;
+    color: #00ff95;
+    border-color: #404040;
+}
+
+.form-label, 
+.card-header h5,
+.card-header h6,
+#powerResults label,
+#powerResults p,
+.input-group-text {
+    color: #ffffff;
+    font-family: 'Arial', sans-serif;
+}
+
+.math-symbol {
+    font-family: 'Symbol', 'Arial Unicode MS', sans-serif;
+    color: #ffffff;
+}
+
+.measurement-value {
+    color: #00ff95;
+    font-weight: 500;
+}
+
+.unit {
+    color: #ffffff;
+    opacity: 0.9;
+}
+
+.result-item {
+    background-color: #363636;
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+
+.result-item:hover {
+    background-color: #404040;
+}
+
+.input-group {
+    background-color: #363636;
+    border-radius: 6px;
+}
+
+.input-group-text {
+    background-color: #404040;
+    border-color: #505050;
+    color: #ffffff;
+}
+
+.measurement-value {
+    transition: color 0.3s ease;
+}
+
+.measurement-value.updated {
+    color: #00ff95;
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.unit {
+    font-size: 0.9em;
+    margin-left: 4px;
+    opacity: 0.8;
+}
+
+h1, h2, h3, h4, h5, h6, p, label, span, .form-label, .card-header h5 {
+    color: #ffffff;
+}
+
+.ac-wave-container {
+    height: 150px;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+h1 {
+    color: #00ff95;
+    text-shadow: 0 0 10px rgba(0, 255, 149, 0.3);
+} 

@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Potenze in corrente alternata</title>
+    <style>
+        :root {
+            --primary-color: #00ff95;
+            --secondary-color: #ff3366;
+            --bg-dark: #1a1a1a;
+            --bg-card: #2d2d2d;
+            --bg-input: #363636;
+            --neon-shadow: 0 0 10px rgba(0, 255, 149, 0.3);
+            --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 0 0 10px rgba(0, 255, 149, 0.5);
+            letter-spacing: 2px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .main-row {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            flex: 1;
+            background: var(--bg-card);
+            border-left: 3px solid var(--primary-color);
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 300px;
+            width: calc(50% - 15px); /* 50% meno metà del gap */
+        }
+
+        .input-section, .results-section, .formulas-card, .empty-section {
+            flex: 1;
+            background: var(--bg-card);
+            border-radius: 10px;
+        }
+
+        .empty-section {
+            background: transparent;
+        }
+
+        .input-section {
+            border: none;
+            border-left: 3px solid var(--primary-color);
+            padding: 15px;
+            background: var(--bg-card);
+            flex: 0 1 auto;
+            margin-bottom: 20px;
+        }
+
+        .results-section, .formulas-card {
+            border: 1px solid rgba(255, 51, 102, 0.3);
+        }
+
+        .input-section h2 {
+            color: var(--primary-color);
+            font-size: 1.2em;
+            margin-top: 0;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--primary-color);
+        }
+
+        .input-field {
+            margin-bottom: 15px;
+            position: relative;
+            background: var(--bg-input);
+            padding: 10px 15px;
+            border-radius: 4px;
+        }
+
+        .input-field label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+            color: #ffffff;
+            opacity: 0.9;
+        }
+
+        .input-field input {
+            width: calc(100% - 30px);
+            padding: 5px 0;
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-size: 1em;
+        }
+
+        .input-field input:focus {
+            outline: none;
+        }
+
+        .unit {
+            display: inline-block;
+            margin-left: 5px;
+            color: var(--primary-color);
+            font-size: 0.85em;
+            opacity: 0.8;
+            user-select: none;
+        }
+
+        .result-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            background: rgba(54, 54, 54, 0.6);
+            border-radius: 8px;
+            border-left: 3px solid var(--primary-color);
+            transition: all 0.3s ease;
+        }
+
+        .result-item:hover {
+            background: rgba(54, 54, 54, 0.8);
+            transform: translateX(5px);
+        }
+
+        .result-value {
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-left: 10px;
+            font-size: 1.1em;
+            text-shadow: 0 0 5px rgba(0, 255, 149, 0.3);
+        }
+
+        /* Animazione per i valori che cambiano */
+        .result-value.updated {
+            animation: pulse 0.5s ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-row {
+                flex-direction: column;
+            }
+            
+            .empty-section {
+                display: none;
+            }
+
+            .card {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+        }
+
+        /* Effetti hover per gli input */
+        .input-field:hover input {
+            background-color: rgba(54, 54, 54, 0.8);
+        }
+
+        /* Stile per placeholder */
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Scrollbar personalizzata */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00cc76;
+        }
+
+        .formulas-section {
+            margin-top: 20px;
+        }
+
+        .formulas-card {
+            padding: 15px;
+            border-radius: 10px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .formula-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .formula-item {
+            padding: 10px;
+            border-radius: 8px;
+            border-left: 2px solid var(--primary-color);
+            font-size: 0.9em;
+        }
+
+        .formula-item h3 {
+            font-size: 1em;
+            margin-bottom: 5px;
+        }
+
+        .formula {
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 1em;
+            margin: 5px 0;
+        }
+
+        .unit-label {
+            font-size: 0.75em;
+        }
+
+        .description {
+            font-size: 0.8em;
+            margin: 3px 0 0 0;
+            opacity: 0.8;
+        }
+
+        /* Stile compatto per schermi più piccoli */
+        @media (max-width: 768px) {
+            .formula-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .formula-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .formula {
+                font-size: 0.9em;
+            }
+        }
+
+        .results-section, .formulas-card {
+            background: var(--bg-card);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .results-section h2, .formulas-card h2 {
+            color: var(--primary-color);
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--primary-color);
+            padding-bottom: 5px;
+        }
+
+        .result-item, .formula-item {
+            background: var(--bg-input);
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            border-radius: 5px;
+            border-left: 3px solid var(--primary-color);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+        }
+
+        .result-value, .formula {
+            color: var(--primary-color);
+            margin-left: 5px;
+        }
+
+        .unit {
+            color: #ffffff;
+            margin-left: 5px;
+        }
+
+        .formula-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .formula-item {
+            font-size: 0.95em;
+        }
+
+        .formula-item h3 {
+            margin: 0;
+            font-size: 1em;
+            color: #ffffff;
+            display: inline;
+        }
+
+        .mt-4 {
+            margin-top: 20px;
+        }
+
+        /* Add spin button styles */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            opacity: 0.3;
+            height: 20px;
+        }
+
+        .input-with-unit {
+            display: flex;
+            align-items: center;
+            background: var(--bg-input);
+            border-radius: 4px;
+        }
+
+        .input-with-unit input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            padding: 8px;
+            font-size: 1em;
+        }
+
+        .unit-select {
+            width: auto;
+            padding: 8px;
+            background: var(--bg-input);
+            border: none;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--primary-color);
+            font-size: 0.9em;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            padding-right: 20px;
+        }
+
+        .unit-select:focus {
+            outline: none;
+        }
+
+        /* Add a custom dropdown arrow */
+        .unit-select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cpath fill='%2300ff95' d='M0 2l4 4 4-4z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+        }
+
+        .chart-container {
+            background: var(--bg-card);
+            border-left: 3px solid var(--primary-color);
+            border-radius: 10px;
+            padding: 20px;
+            height: 300px;
+            position: relative;
+            margin-top: 20px;
+            width: calc(50% - 15px);
+            box-shadow: 0 1px 0 rgba(0, 255, 149, 0.3);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-title {
+            color: var(--primary-color);
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--primary-color);
+            width: 100%;
+        }
+
+        canvas#sineWaveChart {
+            flex: 1;
+            margin-bottom: 10px;
+        }
+
+        .chart-container canvas {
+            flex: 1;
+            width: 100% !important;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            font-size: 1.2em;
+            margin: 0 0 15px 0;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--primary-color);
+        }
+
+        /* Assicura che tutti i riquadri abbiano la stessa altezza minima */
+        .input-section,
+        .results-section,
+        .chart-container,
+        .formulas-card {
+            min-height: 300px;
+            box-sizing: border-box;
+        }
+
+        /* Stile per il contenitore della firma */
+        .signature-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(0, 255, 149, 0.2);
+        }
+
+        /* Stile per il logo rotante */
+        .rotating-logo {
+            width: 30px;
+            height: 30px;
+            background: var(--primary-color);
+            color: var(--bg-dark);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            animation: rotate 3s linear infinite;
+            box-shadow: 0 0 10px rgba(0, 255, 149, 0.3);
+        }
+
+        /* Stile per il testo della firma */
+        .signature-text {
+            color: var(--primary-color);
+            font-size: 0.9em;
+            opacity: 0.8;
+            font-style: italic;
+        }
+
+        /* Animazione di rotazione */
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Effetto hover */
+        .rotating-logo:hover {
+            animation: rotate 1s linear infinite;
+            box-shadow: 0 0 15px rgba(0, 255, 149, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <h1>Potenze in corrente alternata</h1>
+
+    <div class="container">
+        <!-- Prima riga: Input e Risultati -->
+        <div class="main-row">
+            <div class="input-section card">
+                <h2>Dati</h2>
+                <div class="input-field">
+                    <label>Tensione (V)</label>
+                    <div class="input-with-unit">
+                        <input type="number" id="voltage" value="220" min="0" step="0.1">
+                        <select class="unit-select" id="voltage-unit">
+                            <option value="V">V</option>
+                            <option value="kV">kV</option>
+                            <option value="mV">mV</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-field">
+                    <label>Corrente (I)</label>
+                    <div class="input-with-unit">
+                        <input type="number" id="current" value="1" min="0">
+                        <select class="unit-select" id="current-unit">
+                            <option value="A">A</option>
+                            <option value="mA">mA</option>
+                            <option value="kA">kA</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-field">
+                    <label>Frequenza (f)</label>
+                    <div class="input-with-unit">
+                        <input type="number" id="frequency" value="50" min="0" step="0.1">
+                        <select class="unit-select" id="frequency-unit">
+                            <option value="Hz">Hz</option>
+                            <option value="kHz">kHz</option>
+                            <option value="MHz">MHz</option>
+                        </select> 
+
+                    </div>
+                </div>
+                <div class="input-field">
+                    <label>Fattore di Potenza (cosφ)</label>
+                    <input type="number" id="powerFactor" min="-1" max="1" step="0.01" value="1" placeholder="Inserisci un valore tra -1 e 1">
+                </div>
+            </div>
+            <div class="results-section card">
+                <h2>Risultati</h2>
+                <div class="result-item">
+                    Potenza Attiva (P):<span id="activePower" class="result-value">0</span> W
+                </div>
+                <div class="result-item">
+                    Potenza Reattiva (Q):<span id="reactivePower" class="result-value">0</span> VAR
+                </div>
+                <div class="result-item">
+                    Potenza Apparente (S):<span id="apparentPower" class="result-value">0</span> VA
+                </div>
+                <div class="result-item">
+                    Impedenza (Z):<span id="impedance" class="result-value">0</span> Ω
+                </div>
+                <div class="result-item">
+                    Angolo di Fase (φ):<span id="phaseAngle" class="result-value">0</span>°
+                </div>
+                <div class="result-item">
+                    Fattore di Reattività (sinφ):<span id="reactivityFactor" class="result-value">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seconda riga: Grafico e Formule -->
+        <div class="main-row">
+            <div class="chart-container card">
+                <h2>Grafico Tensione-Corrente</h2>
+                <canvas id="sineWaveChart"></canvas>
+                <div class="signature-container">
+                    <div class="rotating-logo">A</div>
+                    <div class="signature-text">Realizzato da Alexander Bellavia</div>
+                </div>
+            </div>
+            <div class="formulas-card card">
+                <h2>Formule Utilizzate</h2>
+                <div class="formula-grid">
+                    <div class="formula-item">
+                        Potenza Attiva (P): <span class="formula">V × I × cos(φ)</span> <span class="unit">W</span>
+                    </div>
+                    <div class="formula-item">
+                        Potenza Reattiva (Q): <span class="formula">V × I × sin(φ)</span> <span class="unit">VAR</span>
+                    </div>
+                    <div class="formula-item">
+                        Potenza Apparente (S): <span class="formula">V × I</span> <span class="unit">VA</span>
+                    </div>
+                    <div class="formula-item">
+                        Impedenza (Z): <span class="formula">V / I</span> <span class="unit">Ω</span>
+                    </div>
+                    <div class="formula-item">
+                        Angolo di Fase (φ): <span class="formula">arccos (P/S)</span> <span class="unit">°</span>
+                    </div>
+                    <div class="formula-item">
+                        Fattore di Reattività (sinφ): <span class="formula">Q/S</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        class PowerCalculator {
+            constructor() {
+                this.initializeElements();
+                this.initializeEventListeners();
+                this.initializeSineWave();
+            }
+
+            initializeElements() {
+                this.voltageInput = document.getElementById('voltage');
+                this.currentInput = document.getElementById('current');
+                this.frequencyInput = document.getElementById('frequency');
+                this.powerFactorInput = document.getElementById('powerFactor');
+                this.voltageUnit = document.getElementById('voltage-unit');
+                this.currentUnit = document.getElementById('current-unit');
+                this.frequencyUnit = document.getElementById('frequency-unit');
+
+                this.activePowerOutput = document.getElementById('activePower');
+                this.reactivePowerOutput = document.getElementById('reactivePower');
+                this.apparentPowerOutput = document.getElementById('apparentPower');
+                this.impedanceOutput = document.getElementById('impedance');
+                this.phaseAngleOutput = document.getElementById('phaseAngle');
+                this.reactivityFactorOutput = document.getElementById('reactivityFactor');
+            }
+
+            initializeEventListeners() {
+                const inputs = [
+                    this.voltageInput,
+                    this.currentInput,
+                    this.frequencyInput,
+                    this.powerFactorInput,
+                    this.voltageUnit,
+                    this.currentUnit,
+                    this.frequencyUnit
+                ];
+
+                inputs.forEach(input => {
+                    input.addEventListener('input', () => this.calculateAll());
+                    input.addEventListener('change', () => this.calculateAll());
+                });
+            }
+
+            initializeSineWave() {
+                const ctx = document.getElementById('sineWaveChart').getContext('2d');
+                
+                this.sineChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: Array(200).fill(''),
+                        datasets: [{
+                            label: 'Tensione',
+                            borderColor: 'rgb(0, 255, 149)',
+                            borderWidth: 2,
+                            data: [],
+                            fill: false,
+                            tension: 0,
+                            pointRadius: 0
+                        }, {
+                            label: 'Corrente',
+                            borderColor: 'rgb(255, 51, 102)',
+                            borderWidth: 2,
+                            data: [],
+                            fill: false,
+                            tension: 0,
+                            pointRadius: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                type: 'linear',
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#ffffff',
+                                    maxTicksLimit: 10
+                                }
+                            },
+                            y: {
+                                min: -250,
+                                max: 250,
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#ffffff',
+                                    stepSize: 50
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#ffffff',
+                                    boxWidth: 15,
+                                    padding: 15
+                                }
+                            }
+                        },
+                        animation: {
+                            duration: 300
+                        }
+                    }
+                });
+
+                // Genera il grafico iniziale
+                this.updateSineWave();
+            }
+
+            updateSineWave() {
+                const V = parseFloat(this.voltageInput.value) || 220;
+                const I = parseFloat(this.currentInput.value) || 1;
+                const f = parseFloat(this.frequencyInput.value) || 50;
+                const cosφ = parseFloat(this.powerFactorInput.value) || 1;
+                const φ = Math.acos(cosφ);
+
+                const points = 1000;
+                const voltageData = [];
+                const currentData = [];
+                
+                for (let i = 0; i < points; i++) {
+                    const t = (i / points) * (2 * Math.PI);
+                    const x = (i / points) * 200;
+                    
+                    // Tensione
+                    voltageData.push({
+                        x: x,
+                        y: V * Math.sin(t)
+                    });
+                    
+                    // Corrente - scalata per essere visibile sullo stesso grafico
+                    currentData.push({
+                        x: x,
+                        y: (V * Math.sin(t - φ)) * (I/220)  // Scala la corrente in base al suo valore effettivo
+                    });
+                }
+
+                // Aggiorna la configurazione del grafico
+                this.sineChart.options.scales.y = {
+                    min: -Math.max(V, V * (I/220)) * 1.2,
+                    max: Math.max(V, V * (I/220)) * 1.2,
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    ticks: {
+                        color: '#ffffff',
+                        stepSize: 50
+                    }
+                };
+
+                this.sineChart.data.datasets[0].data = voltageData;
+                this.sineChart.data.datasets[1].data = currentData;
+                this.sineChart.update();
+            }
+
+            calculateAll() {
+                const V = Math.max(0, parseFloat(this.voltageInput.value) || 0);
+                const I = Math.max(0, parseFloat(this.currentInput.value) || 0);
+                const f = Math.max(0, parseFloat(this.frequencyInput.value) || 50);
+                const cosφ = Math.min(1, Math.max(-1, parseFloat(this.powerFactorInput.value) || 1));
+
+                const φ = Math.acos(cosφ);
+                const S = V * I;
+                const P = S * cosφ;
+                const Q = S * Math.sin(φ);
+                const Z = V / I || 0;
+                const sinφ = Math.sin(φ);
+
+                this.updateResults({
+                    P: P,
+                    Q: Q,
+                    S: S,
+                    Z: Z,
+                    φ: φ * (180 / Math.PI),
+                    sinφ: sinφ
+                });
+
+                // Aggiorna il grafico con i nuovi valori
+                this.updateSineWave();
+            }
+
+            updateResults(results) {
+                this.activePowerOutput.textContent = this.formatNumber(results.P);
+                this.reactivePowerOutput.textContent = this.formatNumber(results.Q);
+                this.apparentPowerOutput.textContent = this.formatNumber(results.S);
+                this.impedanceOutput.textContent = this.formatNumber(results.Z);
+                this.phaseAngleOutput.textContent = this.formatNumber(results.φ);
+                this.reactivityFactorOutput.textContent = this.formatNumber(results.sinφ);
+            }
+
+            formatNumber(num) {
+                if (isNaN(num) || !isFinite(num)) return '0';
+                if (Math.abs(num) < 0.01 && num !== 0) return num.toExponential(2);
+                return num.toFixed(2).replace(/\.?0+$/, '');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const calculator = new PowerCalculator();
+            calculator.calculateAll(); // Trigger initial calculation
+        });
+    </script>
+</body>
+</html>
